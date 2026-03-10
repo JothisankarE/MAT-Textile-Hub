@@ -1,0 +1,7 @@
+[build]
+  command = "npm --prefix admin run build"
+  publish = "admin/dist"
+
+[context.production.environment]
+# Optional: ensure NODE_ENV is production during build
+  NODE_ENV = "production"
