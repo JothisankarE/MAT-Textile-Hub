@@ -1,0 +1,9 @@
+{
+  "name": "dumpy-ecom-proj-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix admin run dev",
+    "build": "npm --prefix admin run build",
+    "start": "npm --prefix admin run preview"
+  }
+}
