@@ -1,5 +1,5 @@
 [build]
-  command = "npm --prefix admin run build"
+  command = "npm --prefix admin install && npm --prefix admin run build"
   publish = "admin/dist"
 
 [[redirects]]
