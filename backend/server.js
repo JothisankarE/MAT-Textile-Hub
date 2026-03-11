@@ -1,12 +1,3 @@
-// import express  from "express"
-// import cors from 'cors'
-// import { connectDB } from "./config/db.js"
-// import userRouter from "./routes/userRoute.js"
-// import foodRouter from "./routes/productRoute.js"
-// import 'dotenv/config'
-// import cartRouter from "./routes/cartRoute.js"
-// import orderRouter from "./routes/orderRoute.js"
-
 const express = require("express");
 const cors = require('cors');
 const connectDB = require("./config/db.js");
@@ -36,6 +27,22 @@ app.use("/images", express.static('uploads'))
 app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/chat", chatRouter)
+
+// --- Admin Panel Serving (on Render) ---
+const adminDistPath = path.join(__dirname, 'admin-dist');
+const fs = require('fs');
+
+// Log status on startup
+console.log('Admin Dist Path:', adminDistPath);
+if (fs.existsSync(path.join(adminDistPath, 'index.html'))) {
+    console.log('✅ Admin Panel detected at root.');
+} else {
+    console.log('⚠️ Admin Panel build not found. Visit /api-docs for status.');
+}
+
+// Serve static files from the admin panel dist folder
+app.use(express.static(adminDistPath));
+// ----------------------------------------
 
 app.get("/api-docs", (req, res) => {
   res.send(`
@@ -280,6 +287,16 @@ app.get("/api-docs", (req, res) => {
 </body>
 </html>
   `);
+});
+
+// Catch-all route to serve the admin panel's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(adminDistPath, 'index.html'), (err) => {
+    if (err) {
+      // If index.html is missing, show the API Docs instead of a 404
+      res.redirect('/api-docs');
+    }
+  });
 });
 
 app.listen(port, () => console.log(`Server started on port ${port}`))

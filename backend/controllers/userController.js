@@ -283,7 +283,11 @@ const googleAuth = async (req, res) => {
         const token = createToken(user._id);
         res.json({ success: true, token, name: user.name });
     } catch (error) {
-        console.error("Google auth error:", error);
+        console.error("❌ Google auth error details:", {
+            message: error.message,
+            stack: error.stack,
+            env_id: process.env.GOOGLE_CLIENT_ID ? "PRESENT" : "MISSING"
+        });
         res.json({ success: false, message: "Google authentication failed" });
     }
 };

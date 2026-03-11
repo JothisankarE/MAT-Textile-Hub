@@ -1,19 +1,18 @@
 services:
   - type: web
-    name: mat-textile-hub-backend
+    name: mat-textile-hub-admin
     env: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd admin && npm install && npm run build && cd ../backend && npm install
+    startCommand: cd backend && npm start
     envVars:
+      - key: GOOGLE_CLIENT_ID
+        sync: false
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: STRIPE_SECRET_KEY
-        sync: false
-      - key: GOOGLE_CLIENT_ID
         sync: false
       - key: NODE_ENV
         value: production
