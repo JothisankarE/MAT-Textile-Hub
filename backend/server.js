@@ -37,11 +37,11 @@ app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/chat", chatRouter)
 
-// Set paths for serving the admin panel
-// We build the admin panel into backend/admin-dist to avoid "up-directory" issues on Render
 const adminDistPath = path.join(__dirname, 'admin-dist');
+const fs = require('fs');
 
 console.log('Admin Dist Path:', adminDistPath);
+console.log('Index.html exists:', fs.existsSync(path.join(adminDistPath, 'index.html')));
 
 // Serve static files from the admin panel dist folder
 app.use(express.static(adminDistPath));
