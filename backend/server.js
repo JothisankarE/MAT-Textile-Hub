@@ -13,37 +13,22 @@ const path = require('path');
 const app = express()
 const port = process.env.PORT || 4000
 
-// 1. Robust CORS configuration
-const allowedOrigins = [
-  'https://mat-textile-hub.vercel.app',
-  'https://mat-textile-hub-admin.onrender.com',
-  'http://localhost:5173',
-  'http://localhost:5174'
-];
-
+// 1. Permissive CORS for debugging
 app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      console.log(`CORS blocked for origin: ${origin}`);
-      return callback(null, true); // Allow all for now to debug, but log violation
-    }
-    return callback(null, true);
-  },
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 
-// 2. Extra Security/Auth Headers (COOP/COEP)
+// 2. Security/Auth Headers (COOP/COEP)
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
   next();
 });
 
-// 3. Body parsers
+// 3. Middlewares
 app.use(express.json())
 
 // db connection
@@ -62,13 +47,7 @@ const adminDistPath = path.join(__dirname, 'admin-dist');
 const fs = require('fs');
 
 console.log('Admin Dist Path:', adminDistPath);
-if (fs.existsSync(path.join(adminDistPath, 'index.html'))) {
-    console.log('✅ Admin Panel detected.');
-} else {
-    console.log('⚠️ Admin Panel build not found.');
-}
 
-// Serve static files from the admin panel
 app.use(express.static(adminDistPath));
 
 app.get("/api-docs", (req, res) => {
@@ -89,7 +68,7 @@ app.get("/api-docs", (req, res) => {
 <body>
   <h1>MAT Traders API</h1>
   <div class="status">● All Systems Operational</div>
-  <p class="info">Backend is running and connected to MongoDB.</p>
+  <p class="info">Backend is running.</p>
   <a href="/">Go to Admin Panel</a>
 </body>
 </html>
@@ -107,6 +86,12 @@ app.get('*', (req, res) => {
       }
     }
   });
+});
+
+// 4. Global Error Handler to prevent 502s
+app.use((err, req, res, next) => {
+  console.error("Critical Error:", err.stack);
+  res.status(500).json({ success: false, message: "Internal Server Error" });
 });
 
 app.listen(port, () => console.log(`Server started on port ${port}`))
