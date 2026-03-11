@@ -4,7 +4,7 @@ services:
     name: mat-textile-hub-admin
     env: node
     plan: free
-    buildCommand: npm install && npm run build:admin && cd backend && npm install
+    buildCommand: npm install && cd admin && npm install && npm run build -- --outDir ../backend/admin-dist && cd ../backend && npm install
     startCommand: cd backend && npm start
     envVars:
       - key: MONGODB_URI
