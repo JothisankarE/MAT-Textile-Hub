@@ -40,6 +40,29 @@ app.get("/", (req, res) => {
   res.send("API Working")
 });
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    dbConnected: mongoose.connection.readyState === 1,
+    env: {
+      hasMongoUri: !!process.env.MONGODB_URI,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      nodeEnv: process.env.NODE_ENV
+    }
+  });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({
+    success: false,
+    message: "An internal server error occurred",
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+
 if (require.main === module) {
   app.listen(port, () => console.log(`Server started on http://localhost:${port}`));
 }
