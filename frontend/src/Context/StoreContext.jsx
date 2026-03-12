@@ -6,7 +6,11 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
 
-    const url = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:4000" : "");
+    const url = import.meta.env.VITE_API_URL || 
+                (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+                ? "http://localhost:4000" 
+                : "https://mat-textile-hub.vercel.app");
+
 
 
     const [product_list, setProductList] = useState([]);

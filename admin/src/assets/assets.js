@@ -19,6 +19,10 @@ export const assets = {
     parcel_icon
 }
 
-export const url = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:4000" : "");
+export const url = import.meta.env.VITE_BACKEND_URL || 
+                   (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+                   ? "http://localhost:4000" 
+                   : "https://mat-textile-hub.vercel.app");
+
 
 
