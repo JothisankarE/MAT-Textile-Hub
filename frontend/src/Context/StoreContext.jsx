@@ -6,7 +6,8 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
 
-    const url = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:4000" : "");
+    const url = import.meta.env.VITE_API_URL || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:4000" : "");
+
 
     const [product_list, setProductList] = useState([]);
     const [cartItems, setCartItems] = useState({});
