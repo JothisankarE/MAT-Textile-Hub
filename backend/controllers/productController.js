@@ -1,6 +1,9 @@
 const productModel = require("../models/productModel");
 const fs = require('fs');
 const xlsx = require('xlsx');
+const path = require('path');
+
+const uploadsPath = process.env.VERCEL ? '/tmp' : 'uploads';
 
 // all product list
 const listProduct = async (req, res) => {
@@ -103,7 +106,7 @@ const removeProduct = async (req, res) => {
     try {
 
         const product = await productModel.findById(req.body.id);
-        fs.unlink(`uploads/${product.image}`, () => { })
+        fs.unlink(path.join(uploadsPath, product.image), () => { })
 
         await productModel.findByIdAndDelete(req.body.id)
         res.json({ success: true, message: "Product Removed" })
@@ -166,14 +169,14 @@ const updateProduct = async (req, res) => {
             }
 
             if (product.image) {
-                const mainImagePath = `uploads/${product.image}`;
+                const mainImagePath = path.join(uploadsPath, product.image);
                 if (fs.existsSync(mainImagePath)) {
                     fs.unlink(mainImagePath, (err) => { if (err) console.log("Error unlinking main image:", err) });
                 }
             }
             if (product.extraImages && Array.isArray(product.extraImages)) {
                 product.extraImages.forEach(img => {
-                    const extraPath = `uploads/${img}`;
+                    const extraPath = path.join(uploadsPath, img);
                     if (fs.existsSync(extraPath)) {
                         fs.unlink(extraPath, (err) => { if (err) console.log("Error unlinking extra image:", err) });
                     }

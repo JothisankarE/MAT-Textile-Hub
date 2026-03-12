@@ -10,7 +10,9 @@ const multer = require('multer');
 
 // Image Storage Engine
 const storage = multer.diskStorage({
-    destination: 'uploads',
+    destination: (req, file, cb) => {
+        cb(null, process.env.VERCEL ? '/tmp' : 'uploads');
+    },
     filename: (req, file, cb) => {
         return cb(null, `${Date.now()}${file.originalname}`);
     }
