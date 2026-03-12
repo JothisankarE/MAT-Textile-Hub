@@ -42,6 +42,12 @@ app.use("/api/cart", cartRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/chat", chatRouter)
 
+// Health Check for Vercel
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ success: true, message: "Backend is healthy", environment: process.env.VERCEL ? "Vercel" : "Local/Other" });
+});
+
+
 // --- Admin Panel Serving (on Render) ---
 const adminDistPath = path.join(__dirname, 'admin-dist');
 const fs = require('fs');
@@ -77,13 +83,13 @@ app.get("/api-docs", (req, res) => {
 
 // Catch-all route to serve the admin panel's index.html
 app.get('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ success: false, message: "API endpoint not found" });
+  }
+  
   res.sendFile(path.join(adminDistPath, 'index.html'), (err) => {
     if (err) {
-      if (!req.path.startsWith('/api')) {
-         res.redirect('/api-docs');
-      } else {
-         res.status(404).json({ success: false, message: "API endpoint not found" });
-      }
+      res.redirect('/api-docs');
     }
   });
 });
