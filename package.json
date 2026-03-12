@@ -10,7 +10,8 @@
     "build": "npm run admin-install && npm run admin-build && npm run frontend-install && npm run frontend-build && rm -rf dist && mkdir -p dist && cp -r frontend/dist/* dist/ && mkdir -p dist/admin && cp -r admin/dist/* dist/admin/"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
